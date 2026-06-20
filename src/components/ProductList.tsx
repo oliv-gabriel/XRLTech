@@ -23,8 +23,9 @@ interface ProductListProps {
 
 export function ProductList({ initialProducts, categories }: ProductListProps) {
   const searchParams = useSearchParams();
-  const query = searchParams.get('q') || '';
+  const initialQuery = searchParams.get('q') || '';
   
+  const [query, setQuery] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 24;
@@ -71,6 +72,20 @@ export function ProductList({ initialProducts, categories }: ProductListProps) {
           </h3>
           
           <div className="space-y-6">
+            {/* Search Filter */}
+            <div>
+              <h4 className="font-bold text-zinc-800 dark:text-zinc-200 text-sm mb-4">Buscar</h4>
+              <div className="relative">
+                <input 
+                  type="text" 
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Nome do produto..." 
+                  className="w-full h-10 pl-4 pr-10 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 focus:ring-2 ring-blue-500/50 transition-all text-sm outline-none"
+                />
+              </div>
+            </div>
+
             {/* Category Filter */}
             <div>
               <h4 className="font-bold text-zinc-800 dark:text-zinc-200 text-sm mb-4">Categorias</h4>

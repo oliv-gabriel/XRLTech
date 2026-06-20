@@ -1,9 +1,9 @@
 'use server';
 
 import prisma from "@/lib/prisma";
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import * as ftp from "basic-ftp";
+import { Readable } from "stream";
 
 export async function getProducts(limit?: number) {
   try {
@@ -80,11 +80,28 @@ export async function createProduct(formData: FormData) {
       const extension = file.name.split('.').pop() || 'jpg';
       const fileName = `${productId}.${extension}`;
       
-      const uploadDir = join(process.cwd(), 'public', 'uploads');
-      const filePath = join(uploadDir, fileName);
-
-      await writeFile(filePath, buffer);
-      imagePath = `/uploads/${fileName}`;
+      const client = new ftp.Client();
+      try {
+        await client.access({
+          host: process.env.FTP_HOST,
+          user: process.env.FTP_USER,
+          password: process.env.FTP_PASSWORD,
+          secure: false
+        });
+        
+        const stream = Readable.from(buffer);
+        const remotePath = `${process.env.FTP_PATH || '/public_html/uploads'}/${fileName}`;
+        
+        await client.uploadFrom(stream, remotePath);
+        
+        const publicUrl = process.env.FTP_PUBLIC_URL || '';
+        imagePath = `${publicUrl}/${fileName}`;
+      } catch (err) {
+        console.error("Erro no FTP:", err);
+        throw new Error("Falha ao enviar imagem para o FTP");
+      } finally {
+        client.close();
+      }
     }
 
     await prisma.product.create({

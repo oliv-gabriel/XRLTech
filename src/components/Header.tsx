@@ -82,25 +82,8 @@ export function Header() {
           <Link href="#" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Sobre</Link>
         </nav>
 
-        {/* Search Bar */}
-        <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md relative">
-          <input 
-            type="text" 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar produtos..." 
-            className="w-full h-10 pl-10 pr-4 rounded-full bg-zinc-100 dark:bg-zinc-900 border-none focus:ring-2 ring-blue-500/50 transition-all text-sm outline-none"
-          />
-          <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-blue-600 cursor-pointer transition-colors">
-            <Search size={18} />
-          </button>
-        </form>
-
         {/* Actions */}
         <div className="flex items-center gap-2">
-          <button className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors md:hidden">
-            <Search size={20} />
-          </button>
           <Link 
             href="/carrinho"
             className="p-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors relative"

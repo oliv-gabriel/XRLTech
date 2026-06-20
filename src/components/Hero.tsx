@@ -17,7 +17,7 @@ export function Hero() {
           </p>
           <div className="flex flex-wrap gap-4">
             <Link 
-              href="#" 
+              href="/produtos" 
               className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-all flex items-center gap-2"
             >
               Comprar Agora <ArrowRight size={20} />

@@ -4,7 +4,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { Camera, Send, ThumbsUp, Video } from 'lucide-react';
 
 export function Footer() {
   const { resolvedTheme } = useTheme();
@@ -20,7 +19,7 @@ export function Footer() {
   return (
     <footer className="bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800 pt-16 pb-8">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Brand Col */}
           <div className="space-y-6">
             <Link href="/" className="inline-block">
@@ -34,10 +33,29 @@ export function Footer() {
               Sua parceira de confiança para as tecnologias mais avançadas. Inovação e qualidade em cada detalhe.
             </p>
             <div className="flex gap-4">
-              <Link href="#" className="text-zinc-400 hover:text-blue-600 transition-colors"><Camera size={20} /></Link>
-              <Link href="#" className="text-zinc-400 hover:text-blue-600 transition-colors"><Send size={20} /></Link>
-              <Link href="#" className="text-zinc-400 hover:text-blue-600 transition-colors"><ThumbsUp size={20} /></Link>
-              <Link href="#" className="text-zinc-400 hover:text-blue-600 transition-colors"><Video size={20} /></Link>
+              <a 
+                href="https://instagram.com/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-zinc-400 hover:text-pink-600 transition-colors"
+                title="Instagram da Loja"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+                </svg>
+              </a>
             </div>
           </div>
 
@@ -45,10 +63,10 @@ export function Footer() {
           <div>
             <h4 className="font-bold text-zinc-900 dark:text-zinc-50 mb-6 uppercase text-xs tracking-widest">Loja</h4>
             <ul className="space-y-4 text-sm text-zinc-500">
-              <li><Link href="#" className="hover:text-blue-600 transition-colors">Todos os Produtos</Link></li>
-              <li><Link href="#" className="hover:text-blue-600 transition-colors">Hardware</Link></li>
-              <li><Link href="#" className="hover:text-blue-600 transition-colors">Periféricos</Link></li>
-              <li><Link href="#" className="hover:text-blue-600 transition-colors">Gaming</Link></li>
+              <li><Link href="/produtos" className="hover:text-blue-600 transition-colors">Todos os Produtos</Link></li>
+              <li><Link href="/produtos?q=hardware" className="hover:text-blue-600 transition-colors">Hardware</Link></li>
+              <li><Link href="/produtos?q=periféricos" className="hover:text-blue-600 transition-colors">Periféricos</Link></li>
+              <li><Link href="/produtos?q=gamer" className="hover:text-blue-600 transition-colors">Gaming</Link></li>
             </ul>
           </div>
 
@@ -56,25 +74,17 @@ export function Footer() {
           <div>
             <h4 className="font-bold text-zinc-900 dark:text-zinc-50 mb-6 uppercase text-xs tracking-widest">Suporte</h4>
             <ul className="space-y-4 text-sm text-zinc-500">
-              <li><Link href="#" className="hover:text-blue-600 transition-colors">Fale Conosco</Link></li>
-              <li><Link href="#" className="hover:text-blue-600 transition-colors">FAQ</Link></li>
-              <li><Link href="#" className="hover:text-blue-600 transition-colors">Envios & Devoluções</Link></li>
-              <li><Link href="#" className="hover:text-blue-600 transition-colors">Garantia</Link></li>
+              <li>
+                <a 
+                  href="https://wa.me/5500000000000?text=Olá,%20preciso%20de%20suporte%20na%20loja%20XRLTech!" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-blue-600 transition-colors flex items-center gap-2"
+                >
+                  Fale Conosco (WhatsApp)
+                </a>
+              </li>
             </ul>
-          </div>
-
-          {/* Newsletter */}
-          <div>
-            <h4 className="font-bold text-zinc-900 dark:text-zinc-50 mb-6 uppercase text-xs tracking-widest">Newsletter</h4>
-            <p className="text-sm text-zinc-500 mb-4">Receba ofertas exclusivas e novidades.</p>
-            <form className="flex gap-2">
-              <input 
-                type="email" 
-                placeholder="Seu e-mail" 
-                className="flex-1 px-4 py-2 rounded bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-sm focus:ring-2 ring-blue-500/50 outline-none"
-              />
-              <button className="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded hover:bg-blue-700 transition-colors">OK</button>
-            </form>
           </div>
         </div>
 
