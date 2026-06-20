@@ -90,10 +90,11 @@ export async function createProduct(formData: FormData) {
         });
         
         const stream = Readable.from(buffer);
-        const ftpPath = process.env.FTP_PATH || '/www/files/imagens';
+        const ftpPath = process.env.FTP_PATH || 'www/files/imagens';
         
-        // Entra na pasta (e cria se não existir, se tiver permissão)
-        await client.ensureDir(ftpPath);
+        // Entra na pasta. Removemos a barra inicial para evitar erro "550 /" na KingHost
+        const safePath = ftpPath.startsWith('/') ? ftpPath.substring(1) : ftpPath;
+        await client.ensureDir(safePath);
         
         // Faz o upload apenas com o nome do arquivo, já que estamos na pasta
         await client.uploadFrom(stream, fileName);
