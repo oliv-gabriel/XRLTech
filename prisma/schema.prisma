@@ -53,7 +53,7 @@ model Product {
   name        String
   description String?  @db.Text
   price       Decimal  @db.Decimal(10, 2)
-  image       String?
+  image       String?  @db.LongText
   rating      Int      @default(5)
   stock       Int      @default(0)
   features    Json?    // Stores array of { name: string, value: string }

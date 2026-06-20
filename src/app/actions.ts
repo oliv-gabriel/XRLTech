@@ -2,8 +2,6 @@
 
 import prisma from "@/lib/prisma";
 import { v4 as uuidv4 } from 'uuid';
-import * as ftp from "basic-ftp";
-import { Readable } from "stream";
 
 export async function getProducts(limit?: number) {
   try {
@@ -78,44 +76,11 @@ export async function createProduct(formData: FormData) {
 
       // Extract extension (e.g., .jpg, .png)
       const extension = file.name.split('.').pop() || 'jpg';
-      const fileName = `${productId}.${extension}`;
+      const mimeType = file.type || `image/${extension}`;
       
-      const client = new ftp.Client();
-      try {
-        await client.access({
-          host: process.env.FTP_HOST,
-          user: process.env.FTP_USER,
-          password: process.env.FTP_PASSWORD,
-          secure: false
-        });
-        
-        const stream = Readable.from(buffer);
-        try {
-          // A KingHost tem a pasta 'www' na raiz. As imagens públicas ficam dentro de 'www/imagens'.
-          await client.cd("www");
-          await client.cd("imagens");
-        } catch (cdErr) {
-          console.warn("Aviso: Falha ao tentar entrar em www/imagens. Tentando direto em imagens. Erro:", (cdErr as Error).message);
-          
-          try {
-            // Se o usuário já estiver preso (chroot) dentro da www
-            await client.cd("imagens");
-          } catch (fallbackErr) {
-            console.error("ERRO CRÍTICO: Não foi possível encontrar a pasta de imagens de nenhum jeito. Verifique no FTP se existe a pasta 'imagens' dentro de 'www'.");
-          }
-        }
-        
-        // Faz o upload apenas com o nome do arquivo, já que estamos na pasta
-        await client.uploadFrom(stream, fileName);
-        
-        const publicUrl = process.env.FTP_PUBLIC_URL || '';
-        imagePath = `${publicUrl}/${fileName}`;
-      } catch (err) {
-        console.error("Erro no FTP:", err);
-        throw new Error("Falha ao enviar imagem para o FTP");
-      } finally {
-        client.close();
-      }
+      // Convert buffer to base64 data URL
+      const base64Data = buffer.toString('base64');
+      imagePath = `data:${mimeType};base64,${base64Data}`;
     }
 
     await prisma.product.create({
