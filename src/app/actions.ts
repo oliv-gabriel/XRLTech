@@ -90,9 +90,13 @@ export async function createProduct(formData: FormData) {
         });
         
         const stream = Readable.from(buffer);
-        const remotePath = `${process.env.FTP_PATH || '/public_html/uploads'}/${fileName}`;
+        const ftpPath = process.env.FTP_PATH || '/www/files/imagens';
         
-        await client.uploadFrom(stream, remotePath);
+        // Entra na pasta (e cria se não existir, se tiver permissão)
+        await client.ensureDir(ftpPath);
+        
+        // Faz o upload apenas com o nome do arquivo, já que estamos na pasta
+        await client.uploadFrom(stream, fileName);
         
         const publicUrl = process.env.FTP_PUBLIC_URL || '';
         imagePath = `${publicUrl}/${fileName}`;
