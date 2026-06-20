@@ -97,7 +97,7 @@ export async function createProduct(formData: FormData) {
           // Apenas entra na pasta, sem usar ensureDir que pode dar problema com a KingHost
           await client.cd(safePath);
         } catch (cdErr) {
-          console.warn("Aviso: Falha ao entrar na pasta (CWD), tentando fazer o upload mesmo assim. Erro:", cdErr.message);
+          console.warn("Aviso: Falha ao entrar na pasta (CWD), tentando fazer o upload mesmo assim. Erro:", (cdErr as Error).message);
         }
         
         // Faz o upload apenas com o nome do arquivo, já que estamos na pasta
