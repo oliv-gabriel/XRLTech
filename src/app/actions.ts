@@ -91,17 +91,21 @@ export async function createProduct(formData: FormData) {
         
         const stream = Readable.from(buffer);
         try {
-          // Navegação passo-a-passo (MUITO mais seguro em servidores como KingHost)
-          await client.cd("www");
+          // A KingHost geralmente "prende" o usuário FTP dentro da pasta 'www' (chroot).
+          // Tenta entrar direto na pasta files/imagens
           await client.cd("files");
           await client.cd("imagens");
         } catch (cdErr) {
-          console.warn("Aviso: Falha na navegação passo a passo do FTP. Erro:", (cdErr as Error).message);
-          // Como último recurso, tenta o caminho absoluto direto
+          console.warn("Aviso: Falha ao tentar entrar em files/imagens. O usuário pode não estar dentro de www. Erro:", (cdErr as Error).message);
+          
           try {
-            await client.cd("/www/files/imagens");
+            // Plano B: o usuário FTP caiu na raiz principal do servidor e precisa entrar em www primeiro
+            await client.cd("/");
+            await client.cd("www");
+            await client.cd("files");
+            await client.cd("imagens");
           } catch (fallbackErr) {
-            console.error("Aviso: Falha também no caminho absoluto.");
+            console.error("ERRO CRÍTICO: Não foi possível encontrar a pasta de imagens de nenhum jeito. Verifique no FTP se existe a pasta 'files/imagens'.");
           }
         }
         

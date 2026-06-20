@@ -1,10 +1,8 @@
 const ftp = require("basic-ftp");
 require("dotenv").config({ path: ".env" });
-const { Readable } = require("stream");
 
 async function run() {
   const client = new ftp.Client();
-  client.ftp.verbose = true;
   try {
     console.log("Conectando ao FTP...");
     await client.access({
@@ -14,15 +12,12 @@ async function run() {
       secure: false
     });
     
-    console.log("Tentando entrar em 'imagens'...");
-    await client.cd("imagens");
-    console.log("Entrou em 'imagens' com sucesso!");
+    const pwd = await client.pwd();
+    console.log("DIRETÓRIO ATUAL:", pwd);
     
-    console.log("Fazendo upload de teste...");
-    const buffer = Buffer.from("teste de arquivo");
-    const stream = Readable.from(buffer);
-    await client.uploadFrom(stream, "teste.txt");
-    console.log("Upload feito com sucesso!");
+    const list = await client.list();
+    console.log("PASTAS/ARQUIVOS AQUI:");
+    list.forEach(item => console.log(`- ${item.name} (${item.isDirectory ? 'DIR' : 'FILE'})`));
 
   } catch (err) {
     console.log("ERRO NO FTP:", err);
