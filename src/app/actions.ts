@@ -90,14 +90,19 @@ export async function createProduct(formData: FormData) {
         });
         
         const stream = Readable.from(buffer);
-        const ftpPath = process.env.FTP_PATH || 'imagens';
-        const safePath = ftpPath.startsWith('/') ? ftpPath.substring(1) : ftpPath;
-        
         try {
-          // Apenas entra na pasta, sem usar ensureDir que pode dar problema com a KingHost
-          await client.cd(safePath);
+          // Navegação passo-a-passo (MUITO mais seguro em servidores como KingHost)
+          await client.cd("www");
+          await client.cd("files");
+          await client.cd("imagens");
         } catch (cdErr) {
-          console.warn("Aviso: Falha ao entrar na pasta (CWD), tentando fazer o upload mesmo assim. Erro:", (cdErr as Error).message);
+          console.warn("Aviso: Falha na navegação passo a passo do FTP. Erro:", (cdErr as Error).message);
+          // Como último recurso, tenta o caminho absoluto direto
+          try {
+            await client.cd("/www/files/imagens");
+          } catch (fallbackErr) {
+            console.error("Aviso: Falha também no caminho absoluto.");
+          }
         }
         
         // Faz o upload apenas com o nome do arquivo, já que estamos na pasta
