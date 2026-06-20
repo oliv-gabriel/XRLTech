@@ -90,11 +90,15 @@ export async function createProduct(formData: FormData) {
         });
         
         const stream = Readable.from(buffer);
-        const ftpPath = process.env.FTP_PATH || 'www/files/imagens';
-        
-        // Entra na pasta. Removemos a barra inicial para evitar erro "550 /" na KingHost
+        const ftpPath = process.env.FTP_PATH || 'imagens';
         const safePath = ftpPath.startsWith('/') ? ftpPath.substring(1) : ftpPath;
-        await client.ensureDir(safePath);
+        
+        try {
+          // Apenas entra na pasta, sem usar ensureDir que pode dar problema com a KingHost
+          await client.cd(safePath);
+        } catch (cdErr) {
+          console.warn("Aviso: Falha ao entrar na pasta (CWD), tentando fazer o upload mesmo assim. Erro:", cdErr.message);
+        }
         
         // Faz o upload apenas com o nome do arquivo, já que estamos na pasta
         await client.uploadFrom(stream, fileName);
