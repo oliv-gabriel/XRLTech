@@ -91,21 +91,17 @@ export async function createProduct(formData: FormData) {
         
         const stream = Readable.from(buffer);
         try {
-          // A KingHost geralmente "prende" o usuário FTP dentro da pasta 'www' (chroot).
-          // Tenta entrar direto na pasta files/imagens
-          await client.cd("files");
+          // A KingHost tem a pasta 'www' na raiz. As imagens públicas ficam dentro de 'www/imagens'.
+          await client.cd("www");
           await client.cd("imagens");
         } catch (cdErr) {
-          console.warn("Aviso: Falha ao tentar entrar em files/imagens. O usuário pode não estar dentro de www. Erro:", (cdErr as Error).message);
+          console.warn("Aviso: Falha ao tentar entrar em www/imagens. Tentando direto em imagens. Erro:", (cdErr as Error).message);
           
           try {
-            // Plano B: o usuário FTP caiu na raiz principal do servidor e precisa entrar em www primeiro
-            await client.cd("/");
-            await client.cd("www");
-            await client.cd("files");
+            // Se o usuário já estiver preso (chroot) dentro da www
             await client.cd("imagens");
           } catch (fallbackErr) {
-            console.error("ERRO CRÍTICO: Não foi possível encontrar a pasta de imagens de nenhum jeito. Verifique no FTP se existe a pasta 'files/imagens'.");
+            console.error("ERRO CRÍTICO: Não foi possível encontrar a pasta de imagens de nenhum jeito. Verifique no FTP se existe a pasta 'imagens' dentro de 'www'.");
           }
         }
         
